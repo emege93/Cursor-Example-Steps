@@ -61,6 +61,7 @@
    - [Cuándo actualizar las .cursorrules](#-cuándo-actualizar-las-cursorrules)
    - [Tips para mantener las reglas](#-tips-para-mantener-las-reglas)
    - [Ejemplos de uso](#-ejemplos-de-uso)
+   - [Referencia al Modo Guiado en .cursorrules](#-referencia-al-modo-guiado-en-cursorrules)
 
 ### 10. [🆘 Solución de Problemas](#-solución-de-problemas)
    - [No encuentras el componente](#problema-no-encuentras-el-componente-que-te-menciono)
@@ -70,7 +71,13 @@
    - [Prefiero otro approach](#problema-prefiero-otro-approach)
    - [Olvidé algo](#problema-olvidé-algo-en-el-step)
 
-### 11. [📋 Template de Inicio Rápido](#-template-de-inicio-rápido)
+### 11. [🤖 Modo Guiado Automático](#-modo-guiado-automático)
+   - [¿Qué es el Modo Guiado?](#-qué-es-el-modo-guiado)
+   - [Cómo iniciar el Modo Guiado](#-cómo-iniciar-el-modo-guiado)
+   - [Ejemplo de Sesión Guiada](#-ejemplo-de-sesión-guiada)
+   - [Modo Guiado vs Modo Manual](#-modo-guiado-vs-modo-manual)
+
+### 12. [📋 Template de Inicio Rápido](#-template-de-inicio-rápido)
 
 ---
 
@@ -2125,6 +2132,116 @@ FLUJO DE ACTUALIZACIÓN:
 
 ---
 
+## 🤖 Referencia al Modo Guiado en .cursorrules
+
+### ¿Debería documentar el modo guiado en .cursorrules?
+
+**Respuesta:** Sí, pero solo una **referencia breve**.
+
+- ✅ **SÍ**: Una sección corta que explique cómo activar el modo guiado
+- ❌ **NO**: Toda la documentación (eso va en este archivo)
+
+### Código exacto para añadir a .cursorrules
+
+Al final del archivo `.cursorrules`, añade esta sección:
+
+```markdown
+## Working with AI Agent
+
+### Guided Mode
+The AI agent supports a guided mode that walks you through the entire development process step by step.
+
+**To start guided mode:**
+```
+Modo guiado: AMPC-XXXX
+```
+
+**The agent will:**
+- Guide you through each phase (analysis, planning, development, QA, versioning)
+- Request only the information needed at each step
+- Automatically track progress with TODO lists
+- Generate summaries for continuing in future chat sessions
+- Handle commits and version management
+
+**To continue a step in a new chat:**
+```
+Modo guiado: Continuar AMPC-XXXX
+
+**Estado:**
+✅ Subtarea 1: [Título] - Commit: abc123
+✅ Subtarea 2: [Título] - Commit: def456
+⏳ Siguiente: Subtarea 3
+```
+
+**Quick commands in guided mode:**
+- `"Siguiente"` - Continue to next step
+- `"Resumen"` - Generate summary for next chat
+- `"Estado"` - Show current progress
+- `"Pausa"` - Pause here
+- `"Hacer N más"` - Do N more subtasks
+
+### Multi-Session Work
+When working across multiple chat sessions:
+- Always end each session with: `"Resume el estado actual de AMPC-XXXX para el próximo chat"`
+- The agent will generate a copy-paste prompt for your next session
+- Always include: Step ID, completed subtasks with commits, next subtask to work on
+
+### Documentation
+For complete documentation on working with the AI agent, including:
+- Detailed process for each phase
+- Prompt templates
+- Example conversations
+- Tips and best practices
+- Troubleshooting
+
+See: `AI_AGENT_GUIDE.md`
+
+### Manual Mode vs Guided Mode
+You can work in two modes:
+- **Guided Mode**: Agent leads the process (recommended for new steps or learning)
+- **Manual Mode**: You direct each step (for experienced users or complex steps)
+
+Switch between modes at any time by saying "Cambio a modo manual" or "Modo guiado"
+```
+
+### Por qué esta referencia es suficiente
+
+**Lo que incluye:**
+- ✅ Cómo iniciar el modo guiado
+- ✅ Cómo continuar en múltiples sesiones
+- ✅ Comandos rápidos esenciales
+- ✅ Referencia a la documentación completa
+
+**Lo que NO incluye (y está bien):**
+- ❌ Ejemplos largos de conversaciones
+- ❌ Toda la explicación de cada fase
+- ❌ Casos de uso detallados
+- ❌ Troubleshooting extenso
+
+**Razón:** `.cursorrules` debe ser conciso. Los detalles van en `AI_AGENT_GUIDE.md`.
+
+### Beneficios de tener esta referencia
+
+1. **Descubrimiento rápido**: Cualquier desarrollador que lea `.cursorrules` sabrá que existe el modo guiado
+2. **Quick reference**: Los comandos básicos están a mano
+3. **Pointer a documentación**: Saben dónde ir para más detalles
+4. **Consistencia**: Mismo mensaje en ambos archivos
+
+### Cuándo actualizar esta referencia
+
+Actualiza esta sección en `.cursorrules` cuando:
+- ✅ Cambies el comando de inicio (`Modo guiado: ...`)
+- ✅ Añadas nuevos comandos rápidos esenciales
+- ✅ Cambies el nombre de este archivo de documentación
+- ✅ Modifiques el flujo básico del modo guiado
+
+No necesitas actualizar por:
+- ❌ Cambios en ejemplos de este documento
+- ❌ Añadir tips o casos de uso
+- ❌ Mejoras en las plantillas de prompts
+
+---
+
 ## 🆘 Solución de Problemas
 
 ### Problema: "No encuentras el componente que te menciono"
@@ -2191,6 +2308,444 @@ También necesitamos que el botón esté en mobile. Añádelo.
 ```
 
 Lo añado al código existente.
+
+---
+
+## 🤖 Modo Guiado Automático
+
+### 🎯 ¿Qué es el Modo Guiado?
+
+En lugar de que tú me digas qué hacer en cada paso, **yo te guío a través de todo el proceso**, pidiéndote solo la información que necesito en cada momento.
+
+**Beneficios:**
+- 🎯 No tienes que recordar qué hacer en cada fase
+- 📝 Yo te pido exactamente lo que necesito
+- ✅ Tracking automático con TODO list
+- 🔄 Puedes pausar y continuar sin perder el hilo
+- 🚀 Más rápido y eficiente
+
+---
+
+## 🚀 Cómo iniciar el Modo Guiado
+
+### Opción 1: Modo Guiado Completo (Recomendado para steps nuevos)
+
+**Tu prompt:**
+```markdown
+Modo guiado: AMPC-XXXX
+```
+
+**Mi respuesta:**
+```markdown
+🤖 MODO GUIADO ACTIVADO - AMPC-XXXX
+
+Voy a guiarte paso a paso por todo el proceso.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📋 PASO 1/6: INFORMACIÓN DEL STEP
+
+Para empezar necesito la información completa del step.
+
+Por favor compárteme:
+
+1. **Título completo del step**
+2. **Descripción detallada** (copia de Jira)
+3. **Criterios de aceptación** (lista completa)
+4. **Diseño** (captura de Figma/Zeplin o enlace)
+5. **Contexto adicional** (componentes relacionados, restricciones, etc.)
+
+Puedes pegar todo el contenido de Jira directamente.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Cuando tengas la información, pégala aquí y continuamos.
+```
+
+---
+
+### Opción 2: Modo Guiado por Fases (Para continuar un step)
+
+**Tu prompt:**
+```markdown
+Modo guiado: Continuar AMPC-XXXX en fase [análisis/planificación/desarrollo/qa/versionado]
+```
+
+**Mi respuesta:**
+```markdown
+🤖 MODO GUIADO - AMPC-XXXX - FASE: DESARROLLO
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📋 INFORMACIÓN NECESARIA:
+
+Para continuar en la fase de desarrollo, necesito:
+
+1. **Estado actual del step**
+   - ¿Qué subtareas ya están completadas? (con commits)
+   - ¿Qué subtarea vas a hacer ahora?
+
+2. **Información de la subtarea** (si la tienes en Jira)
+   - Título
+   - Descripción
+   - Criterios de aceptación
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Comparte la información y empezamos.
+```
+
+---
+
+## 📖 Ejemplo de Sesión Guiada
+
+### 🎬 Sesión Completa - AMPC-1305
+
+#### **Chat 1: Análisis y Planificación**
+
+**Tú:**
+```markdown
+Modo guiado: AMPC-1305
+```
+
+**Yo:**
+```markdown
+🤖 MODO GUIADO ACTIVADO - AMPC-1305
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📋 PASO 1/6: INFORMACIÓN DEL STEP
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Necesito la información completa. Pega el contenido de Jira.
+```
+
+**Tú:** [Pegas toda la info de Jira]
+
+**Yo:**
+```markdown
+✅ Información recibida
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📋 PASO 2/6: ANÁLISIS DEL CODEBASE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Voy a analizar el codebase ahora...
+
+[Realizo búsquedas automáticas]
+
+📊 ANÁLISIS COMPLETO:
+[Muestro el análisis detallado]
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📋 PASO 3/6: CREAR SUBTAREAS DE JIRA
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+¿Quieres que cree las subtareas para Jira ahora?
+
+Responde:
+- "Sí" → Creo las 8 subtareas detalladas
+- "Ajusta [algo]" → Modifico antes de crear
+- "Espera" → Pausamos aquí
+```
+
+**Tú:**
+```markdown
+Sí
+```
+
+**Yo:**
+```markdown
+✅ Subtareas creadas
+
+[Muestro las 8 subtareas detalladas]
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+✅ FASE 1 COMPLETADA: ANÁLISIS Y PLANIFICACIÓN
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📋 TODO LIST CREADO:
+⬜ Subtarea 1: Verificar dependencias
+⬜ Subtarea 2: Crear tipos
+⬜ Subtarea 3: Implementar servicio
+⬜ Subtarea 4: Crear hook
+⬜ Subtarea 5: Añadir botón
+⬜ Subtarea 6: Estilos
+⬜ Subtarea 7: Tests
+⬜ Subtarea 8: Storybook
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📋 PRÓXIMO PASO
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Ahora tienes las subtareas en Jira.
+
+Opciones:
+1. Empezar con subtarea 1 ahora → Di "Empezar subtarea 1"
+2. Pausar y continuar mañana → Di "Resumen para mañana"
+3. Hacer varias subtareas → Di "Hacer subtareas 1 y 2"
+
+¿Qué prefieres?
+```
+
+**Tú:**
+```markdown
+Resumen para mañana
+```
+
+**Yo:**
+```markdown
+📝 RESUMEN PARA EL PRÓXIMO CHAT
+
+═══════════════════════════════════════════════════════════
+
+Copia esto para tu próximo chat:
+
+Modo guiado: Continuar AMPC-1305
+
+**Estado:**
+✅ Análisis completado
+✅ 8 subtareas creadas en Jira
+⏳ Siguiente: Implementar subtareas (empezar por subtarea 1)
+
+**Subtareas:**
+⬜ Subtarea 1: Verificar dependencias (1 SP)
+⬜ Subtarea 2: Crear tipos (2 SP)
+⬜ Subtarea 3: Implementar servicio (3 SP)
+⬜ Subtarea 4: Crear hook (5 SP)
+⬜ Subtarea 5: Añadir botón (3 SP)
+⬜ Subtarea 6: Estilos (2 SP)
+⬜ Subtarea 7: Tests (3 SP)
+⬜ Subtarea 8: Storybook (1 SP)
+
+═══════════════════════════════════════════════════════════
+
+Hasta mañana 👋
+```
+
+---
+
+#### **Chat 2: Desarrollo - Día 2**
+
+**Tú:**
+```markdown
+Modo guiado: Continuar AMPC-1305
+
+**Estado:**
+✅ Análisis completado
+✅ 8 subtareas creadas en Jira
+⏳ Siguiente: Implementar subtareas (empezar por subtarea 1)
+```
+
+**Yo:**
+```markdown
+🤖 MODO GUIADO - AMPC-1305 - CONTINUANDO
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📋 ESTADO ACTUAL
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ Análisis y planificación completados
+⏳ Vamos a implementar subtareas
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📋 PASO 4/6: DESARROLLO - SUBTAREA 1
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Subtarea 1: Verificar e instalar dependencias (1 SP)
+
+Voy a:
+1. Verificar si jszip y file-saver están instalados
+2. Instalarlos si no están
+3. Crear commit
+
+¿Procedo?
+```
+
+**Tú:**
+```markdown
+Sí
+```
+
+**Yo:**
+```markdown
+[Verifico package.json]
+[Instalo dependencias]
+[Creo commit]
+
+✅ SUBTAREA 1 COMPLETADA
+
+Commit: a1b2c3d "AMPC-1305 Add jszip and file-saver dependencies"
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📋 PROGRESO
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ Subtarea 1: Verificar dependencias
+⏳ Subtarea 2: Crear tipos
+⬜ Subtarea 3: Implementar servicio
+⬜ Subtarea 4: Crear hook
+⬜ Subtarea 5: Añadir botón
+⬜ Subtarea 6: Estilos
+⬜ Subtarea 7: Tests
+⬜ Subtarea 8: Storybook
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📋 SIGUIENTE ACCIÓN
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Opciones:
+1. Continuar con subtarea 2 → Di "Siguiente"
+2. Pausar aquí → Di "Resumen"
+3. Hacer varias más → Di "Hacer 2 más"
+
+¿Qué prefieres?
+```
+
+**Tú:**
+```markdown
+Hacer 2 más
+```
+
+**Yo:**
+```markdown
+Perfecto, voy a hacer subtareas 2 y 3.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📋 SUBTAREA 2: CREAR TIPOS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+[Creo los tipos]
+[Creo commit]
+
+✅ SUBTAREA 2 COMPLETADA
+Commit: b2c3d4e
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📋 SUBTAREA 3: IMPLEMENTAR SERVICIO
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+[Creo servicio + tests]
+[Ejecuto tests]
+[Creo commit]
+
+✅ SUBTAREA 3 COMPLETADA
+Commit: c3d4e5f
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+✅ SESIÓN COMPLETADA
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Hoy completaste 3 subtareas ✨
+
+PROGRESO:
+✅ Subtarea 1: Dependencias (a1b2c3d)
+✅ Subtarea 2: Tipos (b2c3d4e)
+✅ Subtarea 3: Servicio (c3d4e5f)
+⬜ Subtarea 4: Hook
+⬜ Subtarea 5: Botón
+⬜ Subtarea 6: Estilos
+⬜ Subtarea 7: Tests
+⬜ Subtarea 8: Storybook
+
+¿Continuamos o dejamos para mañana?
+```
+
+---
+
+## 🔄 Modo Guiado vs Modo Manual
+
+| Aspecto | 🤖 Modo Guiado | 📝 Modo Manual |
+|---------|----------------|----------------|
+| **Inicio** | "Modo guiado: AMPC-XXXX" | "Tengo el step AMPC-XXXX: [info completa]" |
+| **Control** | Yo te guío paso a paso | Tú decides cada paso |
+| **Prompts** | Yo te pido lo que necesito | Tú usas las plantillas |
+| **Tracking** | TODO list automático | Tú llevas el tracking |
+| **Pausar/Continuar** | Yo genero resumen automático | Tú creas tu resumen |
+| **Mejor para** | Steps nuevos, aprendizaje | Usuarios experimentados, steps complejos |
+| **Velocidad** | Más rápido (menos escritura) | Más control (decides ritmo) |
+| **Flexibilidad** | Estructura definida | Total libertad |
+
+---
+
+## 🎯 Cuándo usar cada modo
+
+### Usa Modo Guiado cuando:
+✅ Es tu primer step conmigo  
+✅ Quieres ir rápido sin pensar en qué hacer  
+✅ No recuerdas el proceso completo  
+✅ Quieres que yo lleve el tracking  
+✅ Es un step estándar sin particularidades  
+
+### Usa Modo Manual cuando:
+✅ Ya conoces bien el proceso  
+✅ El step tiene requisitos especiales  
+✅ Quieres control total sobre cada decisión  
+✅ Necesitas saltar o reordenar pasos  
+✅ Prefieres escribir tú los prompts  
+
+---
+
+## 💡 Tips para Modo Guiado
+
+### 1. **Puedes cambiar a modo manual en cualquier momento**
+
+```markdown
+Tú: "Cambio a modo manual"
+
+Yo: "Ok, cambio a modo manual. Ahora tú diriges el proceso."
+```
+
+### 2. **Puedes pausar entre cualquier paso**
+
+```markdown
+Tú: "Pausa aquí"
+
+Yo: [Genero resumen completo para continuar]
+```
+
+### 3. **Puedes saltar pasos si ya están hechos**
+
+```markdown
+Tú: "Modo guiado: AMPC-1305, ya hice análisis y planificación, 
+      empezar en desarrollo subtarea 4"
+
+Yo: "Perfecto, empiezo directamente en subtarea 4..."
+```
+
+### 4. **Puedes pedir más o menos detalle**
+
+```markdown
+Tú: "Más detalle en cada paso"
+Yo: [Explico cada acción antes de hacerla]
+
+Tú: "Modo rápido, menos explicaciones"
+Yo: [Hago múltiples pasos sin esperar confirmación]
+```
+
+### 5. **El TODO list se actualiza automáticamente**
+
+Siempre puedes ver el progreso con:
+```markdown
+Tú: "¿Cómo voy?"
+
+Yo: [Muestro TODO list actualizado con ✅ ⏳ ⬜]
+```
+
+---
+
+## 🚀 Comandos Rápidos en Modo Guiado
+
+```markdown
+"Siguiente"           → Continúa con el siguiente paso
+"Resumen"            → Dame resumen para próximo chat
+"Estado"             → Muéstrame el progreso actual
+"Pausa"              → Para aquí
+"Hacer N más"        → Haz N subtareas seguidas
+"Cambio a manual"    → Desactiva modo guiado
+"¿Qué sigue?"        → Dime cuál es el siguiente paso
+"Repetir"            → Vuelve a hacer el último paso
+"Saltar a [X]"       → Salta directamente a la fase X
+```
 
 ---
 
