@@ -63,7 +63,16 @@
    - [Ejemplos de uso](#-ejemplos-de-uso)
    - [Referencia al Modo Guiado en .cursorrules](#-referencia-al-modo-guiado-en-cursorrules)
 
-### 10. [🆘 Solución de Problemas](#-solución-de-problemas)
+### 10. [🔗 Integración con Jira](#-integración-con-jira)
+   - [¿Qué puede hacer el Agente de Jira?](#-qué-puede-hacer-el-agente-de-jira)
+   - [Configuración inicial](#-configuración-inicial)
+   - [Operaciones disponibles](#-operaciones-disponibles)
+   - [Creación automática de subtareas](#-creación-automática-de-subtareas)
+   - [Consulta de información](#-consulta-de-información)
+   - [Actualización de issues](#-actualización-de-issues)
+   - [Beneficios de la integración](#-beneficios-de-la-integración)
+
+### 11. [🆘 Solución de Problemas](#-solución-de-problemas)
    - [No encuentras el componente](#problema-no-encuentras-el-componente-que-te-menciono)
    - [El código no funciona](#problema-el-código-que-generaste-no-funciona)
    - [Quiero cambiar la subtarea](#problema-quiero-cambiar-algo-de-la-subtarea)
@@ -71,13 +80,14 @@
    - [Prefiero otro approach](#problema-prefiero-otro-approach)
    - [Olvidé algo](#problema-olvidé-algo-en-el-step)
 
-### 11. [🤖 Modo Guiado Automático](#-modo-guiado-automático)
+### 12. [🤖 Modo Guiado Automático](#-modo-guiado-automático)
    - [¿Qué es el Modo Guiado?](#-qué-es-el-modo-guiado)
    - [Cómo iniciar el Modo Guiado](#-cómo-iniciar-el-modo-guiado)
    - [Ejemplo de Sesión Guiada](#-ejemplo-de-sesión-guiada)
    - [Modo Guiado vs Modo Manual](#-modo-guiado-vs-modo-manual)
+   - [Integración con Jira en Modo Guiado](#-integración-con-jira-en-modo-guiado)
 
-### 12. [📋 Template de Inicio Rápido](#-template-de-inicio-rápido)
+### 13. [📋 Template de Inicio Rápido](#-template-de-inicio-rápido)
 
 ---
 
@@ -2242,6 +2252,633 @@ No necesitas actualizar por:
 
 ---
 
+## 🔗 Integración con Jira
+
+### 🎯 ¿Qué puede hacer el Agente de Jira?
+
+Tengo **integración directa con Jira** mediante MCP (Model Context Protocol). Esto significa que puedo **leer y escribir** directamente en tu instancia de Jira sin que tengas que copiar y pegar manualmente.
+
+**Capacidades principales:**
+- 📖 **Leer issues**: Obtener toda la información de un step o subtarea
+- ✍️ **Crear subtareas**: Crearlas automáticamente en Jira con toda la información
+- 🔄 **Actualizar issues**: Modificar descripción, estado, campos, etc.
+- 💬 **Añadir comentarios**: Documentar progreso o decisiones técnicas
+- 🔍 **Buscar con JQL**: Encontrar issues relacionados, dependencias, etc.
+- 📊 **Obtener metadata**: Tipos de issue, campos disponibles, transiciones posibles
+
+---
+
+## 🔧 Configuración inicial
+
+### Requisitos previos
+
+1. **Tener acceso a una instancia de Jira (Atlassian Cloud)**
+2. **Haber configurado la autenticación MCP** para Jira en Cursor
+
+### Verificar que funciona
+
+**Tu prompt:**
+```markdown
+¿Puedes leer el issue AMPC-1305 de Jira?
+```
+
+**Si está configurado correctamente, yo responderé:**
+```markdown
+✅ Conexión con Jira establecida
+
+📋 ISSUE: AMPC-1305
+Título: [Título del issue]
+Estado: [Estado actual]
+Assignee: [Persona asignada]
+...
+[Toda la información del issue]
+```
+
+**Si NO está configurado:**
+```markdown
+⚠️  No tengo acceso a Jira actualmente. 
+
+Para habilitar la integración:
+1. Configura MCP para Atlassian en Cursor
+2. Autentica con tu cuenta de Atlassian
+3. Vuelve a intentar
+
+Mientras tanto, puedes pegarme la información de Jira manualmente.
+```
+
+---
+
+## 🎯 Operaciones disponibles
+
+### 1. 📖 Leer información de issues
+
+#### Obtener un issue específico
+
+**Tu prompt:**
+```markdown
+Lee el issue AMPC-1305
+```
+
+**Lo que obtengo:**
+- Título completo
+- Descripción
+- Estado actual
+- Tipo de issue
+- Story points
+- Assignee
+- Criterios de aceptación
+- Comentarios
+- Subtareas existentes
+- Links a otros issues
+
+**Uso típico:**
+- Inicio de un step (para obtener toda la info sin copiar/pegar)
+- Verificar estado actual
+- Ver qué subtareas ya existen
+
+---
+
+#### Buscar issues con JQL
+
+**Tu prompt:**
+```markdown
+Busca todos los issues del proyecto AMPC que están "In Progress" y asignados a mí
+```
+
+**Lo que hago:**
+```jql
+project = AMPC AND status = "In Progress" AND assignee = currentUser()
+```
+
+**Uso típico:**
+- Ver qué steps tienes en progreso
+- Encontrar issues relacionados
+- Buscar dependencias
+
+---
+
+### 2. ✍️ Creación automática de subtareas
+
+#### Crear subtareas directamente en Jira
+
+**Tu prompt:**
+```markdown
+Crea las subtareas de AMPC-1305 directamente en Jira
+```
+
+**Lo que hago:**
+1. Analizo el issue parent (AMPC-1305)
+2. Genero las subtareas con toda la información
+3. **Creo cada subtarea automáticamente en Jira** usando la API
+4. Te muestro los links a las subtareas creadas
+
+**Resultado:**
+```markdown
+✅ 8 SUBTAREAS CREADAS EN JIRA
+
+┌─────────────────────────────────────────────────────────┐
+│ AMPC-1305-1: Verificar e instalar dependencias         │
+│ https://adsmurai.atlassian.net/browse/AMPC-1305-1     │
+│ Story Points: 1 │ Estado: To Do                         │
+└─────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────┐
+│ AMPC-1305-2: Crear tipos e interfaces                  │
+│ https://adsmurai.atlassian.net/browse/AMPC-1305-2     │
+│ Story Points: 2 │ Estado: To Do                         │
+└─────────────────────────────────────────────────────────┘
+
+... (6 subtareas más)
+
+Total: 8 subtareas │ 20 Story Points │ Todas en estado "To Do"
+```
+
+**Cada subtarea incluye:**
+- ✅ Título descriptivo
+- ✅ Descripción técnica completa
+- ✅ Criterios de aceptación
+- ✅ Story points
+- ✅ Tipo de issue (Technical Task, Development, Testing, etc.)
+- ✅ Archivos involucrados
+- ✅ Dependencias con otras subtareas
+- ✅ Link al issue parent (AMPC-1305)
+
+---
+
+### 3. 🔄 Actualización de issues
+
+#### Cambiar estado de un issue
+
+**Tu prompt:**
+```markdown
+Marca AMPC-1305-1 como "Done"
+```
+
+**Lo que hago:**
+1. Obtengo las transiciones disponibles para ese issue
+2. Ejecuto la transición a "Done"
+3. Confirmo el cambio
+
+---
+
+#### Añadir información a un issue
+
+**Tu prompt:**
+```markdown
+Añade un comentario a AMPC-1305: "Implementadas subtareas 1-3. Commit: a1b2c3d"
+```
+
+**Lo que hago:**
+```markdown
+✅ Comentario añadido a AMPC-1305
+
+📝 Comentario:
+"Implementadas subtareas 1-3. Commit: a1b2c3d"
+
+Visible en: https://adsmurai.atlassian.net/browse/AMPC-1305
+```
+
+---
+
+#### Actualizar campos de un issue
+
+**Tu prompt:**
+```markdown
+Actualiza AMPC-1305: Añade 5 story points más por la complejidad adicional encontrada
+```
+
+**Lo que hago:**
+1. Leo el issue actual
+2. Sumo los story points
+3. Actualizo el campo en Jira
+4. Confirmo el cambio
+
+---
+
+### 4. 📊 Consulta de metadata
+
+#### Obtener proyectos disponibles
+
+**Tu prompt:**
+```markdown
+¿Qué proyectos de Jira tengo disponibles?
+```
+
+**Mi respuesta:**
+```markdown
+📂 PROYECTOS DISPONIBLES
+
+• AMPC - Adsmurai Marketing Platform Creatives
+  - Acceso: Create issues ✅
+  - Tipo: Software
+  
+• DS - Design System
+  - Acceso: View only 👁️
+  - Tipo: Software
+```
+
+---
+
+#### Obtener tipos de issue disponibles
+
+**Tu prompt:**
+```markdown
+¿Qué tipos de issue puedo crear en el proyecto AMPC?
+```
+
+**Mi respuesta:**
+```markdown
+📋 TIPOS DE ISSUE - PROYECTO AMPC
+
+• Story (Historia)
+• Bug (Error)
+• Task (Tarea)
+• Technical Task (Tarea Técnica)
+• Sub-task (Subtarea)
+• Epic (Épica)
+```
+
+---
+
+## 🚀 Creación automática de subtareas
+
+### Flujo completo: Del análisis a Jira
+
+#### Paso 1: Análisis del issue parent
+
+**Tu prompt:**
+```markdown
+Analiza AMPC-1305 y crea las subtareas directamente en Jira
+```
+
+**Lo que hago:**
+1. **Leo el issue AMPC-1305 desde Jira**
+   - Obtengo descripción, criterios, attachments
+2. **Analizo el codebase**
+   - Busco componentes relacionados
+   - Identifico arquitectura necesaria
+3. **Genero plan de subtareas**
+   - Divido en tareas atómicas
+   - Calculo story points
+   - Identifico dependencias
+
+---
+
+#### Paso 2: Crear subtareas automáticamente
+
+**Sin preguntar, yo:**
+
+```markdown
+🔄 CREANDO SUBTAREAS EN JIRA...
+
+[1/8] Creando "Verificar e instalar dependencias"...
+✅ AMPC-1305-1 creada
+
+[2/8] Creando "Crear tipos e interfaces"...
+✅ AMPC-1305-2 creada
+
+[3/8] Creando "Implementar DownloadZipService"...
+✅ AMPC-1305-3 creada
+
+[4/8] Creando "Crear hook useDownloadAllVariants"...
+✅ AMPC-1305-4 creada
+
+[5/8] Creando "Añadir botón en OverviewModule"...
+✅ AMPC-1305-5 creada
+
+[6/8] Creando "Aplicar estilos con design-system"...
+✅ AMPC-1305-6 creada
+
+[7/8] Creando "Tests de integración en OverviewModule"...
+✅ AMPC-1305-7 creada
+
+[8/8] Creando "Actualizar Storybook"...
+✅ AMPC-1305-8 creada
+
+════════════════════════════════════════════════════════════
+
+✅ 8 SUBTAREAS CREADAS EN JIRA
+
+Puedes verlas en:
+https://adsmurai.atlassian.net/browse/AMPC-1305
+
+O directamente:
+• AMPC-1305-1: https://adsmurai.atlassian.net/browse/AMPC-1305-1
+• AMPC-1305-2: https://adsmurai.atlassian.net/browse/AMPC-1305-2
+• AMPC-1305-3: https://adsmurai.atlassian.net/browse/AMPC-1305-3
+• AMPC-1305-4: https://adsmurai.atlassian.net/browse/AMPC-1305-4
+• AMPC-1305-5: https://adsmurai.atlassian.net/browse/AMPC-1305-5
+• AMPC-1305-6: https://adsmurai.atlassian.net/browse/AMPC-1305-6
+• AMPC-1305-7: https://adsmurai.atlassian.net/browse/AMPC-1305-7
+• AMPC-1305-8: https://adsmurai.atlassian.net/browse/AMPC-1305-8
+
+════════════════════════════════════════════════════════════
+
+📊 RESUMEN
+────────────────────────────────────────────────────────────
+Total subtareas: 8
+Total story points: 20
+Todas en estado: To Do
+Parent issue: AMPC-1305
+
+════════════════════════════════════════════════════════════
+```
+
+---
+
+#### Paso 3: Verificación
+
+**Puedes verificar en Jira:**
+- Todas las subtareas están linkadas al parent
+- Tienen toda la información técnica
+- Story points asignados
+- Orden de ejecución recomendado en la descripción
+
+**Ya no necesitas:**
+- ❌ Copiar y pegar cada subtarea manualmente
+- ❌ Crear subtareas una por una en Jira
+- ❌ Añadir story points manualmente
+- ❌ Linkear con el parent issue
+
+**Todo se hace automáticamente** ✨
+
+---
+
+## 📋 Consulta de información
+
+### Obtener estado de un step completo
+
+**Tu prompt:**
+```markdown
+¿Cuál es el estado actual de AMPC-1305 y sus subtareas?
+```
+
+**Mi respuesta:**
+```markdown
+📊 ESTADO: AMPC-1305
+
+═══════════════════════════════════════════════════════════
+
+🎯 ISSUE PRINCIPAL
+───────────────────────────────────────────────────────────
+ID: AMPC-1305
+Título: Añadir botón de descarga múltiple en OverviewModule
+Estado: In Progress
+Assignee: javimg
+Story Points: 20
+
+═══════════════════════════════════════════════════════════
+
+📋 SUBTAREAS (8)
+───────────────────────────────────────────────────────────
+✅ AMPC-1305-1: Verificar dependencias (Done)
+✅ AMPC-1305-2: Crear tipos (Done)
+✅ AMPC-1305-3: Implementar servicio (Done)
+⏳ AMPC-1305-4: Crear hook (In Progress) ← ACTUAL
+⬜ AMPC-1305-5: Añadir botón (To Do)
+⬜ AMPC-1305-6: Estilos (To Do)
+⬜ AMPC-1305-7: Tests (To Do)
+⬜ AMPC-1305-8: Storybook (To Do)
+
+═══════════════════════════════════════════════════════════
+
+📊 PROGRESO
+───────────────────────────────────────────────────────────
+Completadas: 3/8 (37.5%)
+En progreso: 1/8 (12.5%)
+Pendientes: 4/8 (50%)
+
+Story Points completados: 6/20 (30%)
+
+═══════════════════════════════════════════════════════════
+```
+
+---
+
+## 🔄 Actualización de issues
+
+### Actualizar estado de subtareas automáticamente
+
+**Tu prompt:**
+```markdown
+Acabo de completar la subtarea 4. Márcala como Done en Jira
+```
+
+**Lo que hago:**
+1. Busco AMPC-1305-4 en Jira
+2. Obtengo las transiciones disponibles
+3. Ejecuto transición a "Done"
+4. Verifico el cambio
+
+**Mi respuesta:**
+```markdown
+✅ AMPC-1305-4 marcada como "Done" en Jira
+
+🔗 Ver en Jira:
+https://adsmurai.atlassian.net/browse/AMPC-1305-4
+
+📊 PROGRESO ACTUALIZADO:
+Completadas: 4/8 (50%)
+Story Points: 11/20 (55%)
+```
+
+---
+
+### Añadir commits a las subtareas
+
+**Tu prompt:**
+```markdown
+Añade el commit a1b2c3d a la subtarea AMPC-1305-4
+```
+
+**Lo que hago:**
+```markdown
+✅ Comentario añadido a AMPC-1305-4
+
+💬 "Commit: a1b2c3d - AMPC-1305 Add useDownloadAllVariants hook"
+
+Visible en: https://adsmurai.atlassian.net/browse/AMPC-1305-4
+```
+
+---
+
+## ✨ Beneficios de la integración
+
+### 🎯 Ahorro de tiempo
+
+**Sin integración:**
+```
+1. Yo te doy las 8 subtareas en texto
+2. Tú copias subtarea 1
+3. Tú abres Jira
+4. Tú creas nueva subtarea
+5. Tú pegas descripción
+6. Tú añades story points
+7. Tú linkeas con parent
+8. Repites pasos 2-7 para las otras 7 subtareas
+⏱️  Tiempo: ~15-20 minutos
+```
+
+**Con integración:**
+```
+1. Yo creo las 8 subtareas automáticamente
+2. Tú verificas que están en Jira
+⏱️  Tiempo: ~30 segundos
+```
+
+**Ahorro: 95% del tiempo** 🚀
+
+---
+
+### 📊 Información siempre actualizada
+
+- ✅ Leo el estado actual desde Jira (no confío en tu memoria)
+- ✅ Sé qué subtareas están Done sin que me lo digas
+- ✅ Puedo ver el progreso real en todo momento
+- ✅ Detecto bloqueos (subtareas con dependencias pendientes)
+
+---
+
+### 🔄 Sincronización automática
+
+- ✅ Marco subtareas como Done cuando las completamos
+- ✅ Añado commits como comentarios
+- ✅ Actualizo descripciones si cambian requisitos
+- ✅ Linkeo issues relacionados automáticamente
+
+---
+
+### 🎯 Trazabilidad completa
+
+Cada subtarea queda documentada con:
+- ✅ Descripción técnica detallada
+- ✅ Criterios de aceptación específicos
+- ✅ Archivos involucrados
+- ✅ Dependencias con otras subtareas
+- ✅ Story points asignados
+- ✅ Commits asociados (en comentarios)
+
+Todo en Jira, sin esfuerzo manual.
+
+---
+
+## 💡 Tips para usar la integración
+
+### 1. **Siempre pásame el ID del issue**
+
+```markdown
+✅ BIEN: "Analiza AMPC-1305"
+✅ BIEN: "Lee el issue AMPC-1305 de Jira"
+✅ BIEN: "Crea subtareas para AMPC-1305"
+
+❌ MAL: "Analiza el issue"
+❌ MAL: "Crea las subtareas"
+```
+
+---
+
+### 2. **Puedo leer el issue por ti**
+
+No necesitas copiar/pegar la descripción de Jira:
+
+```markdown
+✅ BIEN: "Analiza AMPC-1305 y crea las subtareas"
+
+❌ INNECESARIO: 
+"Analiza este issue:
+Título: ...
+Descripción: ...
+Criterios: ...
+[Todo el contenido de Jira]"
+```
+
+Yo leo directamente desde Jira. Menos trabajo para ti.
+
+---
+
+### 3. **Verifica el resultado en Jira**
+
+Siempre te doy los links directos. Abre Jira y verifica que todo está correcto.
+
+Si algo no está bien:
+```markdown
+"La subtarea 3 debería tener 5 story points, no 3. Corrígela en Jira"
+```
+
+Y yo la actualizo.
+
+---
+
+### 4. **Puedo buscar issues relacionados**
+
+```markdown
+"Busca otros issues que mencionen OverviewModule para entender el contexto"
+```
+
+Yo busco en Jira y te muestro issues relacionados que pueden ser útiles.
+
+---
+
+### 5. **Actualizo el estado conforme avanzamos**
+
+Durante el modo guiado, yo:
+- Marco subtareas como "Done" cuando las completamos
+- Añado commits como comentarios
+- Actualizo el progreso en el issue parent
+
+Todo automáticamente, sin que me lo pidas.
+
+---
+
+## 🔗 Integración con otros flujos
+
+### Durante el análisis
+
+```markdown
+Tú: "Analiza AMPC-1305"
+
+Yo: [Leo el issue desde Jira]
+    [Analizo el codebase]
+    [Genero plan completo]
+```
+
+---
+
+### Durante la planificación
+
+```markdown
+Tú: "Crea las subtareas para AMPC-1305"
+
+Yo: [Creo 8 subtareas en Jira automáticamente]
+    [Te doy los links]
+```
+
+---
+
+### Durante el desarrollo
+
+```markdown
+Tú: "¿Cuál es mi progreso en AMPC-1305?"
+
+Yo: [Leo el estado desde Jira]
+    [Te muestro qué está Done, In Progress, To Do]
+```
+
+---
+
+### Durante el QA
+
+```markdown
+Tú: "Revisa el código de AMPC-1305"
+
+Yo: [Leo las subtareas desde Jira]
+    [Verifico que todas están Done]
+    [Reviso el código de todos los commits]
+    [Genero informe de QA]
+```
+
+---
+
 ## 🆘 Solución de Problemas
 
 ### Problema: "No encuentras el componente que te menciono"
@@ -2746,6 +3383,465 @@ Yo: [Muestro TODO list actualizado con ✅ ⏳ ⬜]
 "Repetir"            → Vuelve a hacer el último paso
 "Saltar a [X]"       → Salta directamente a la fase X
 ```
+
+---
+
+## 🔗 Integración con Jira en Modo Guiado
+
+### 🎯 ¿Cómo funciona la integración automática?
+
+Cuando usas el Modo Guiado, yo **automáticamente interactúo con Jira** sin que tengas que pedirlo explícitamente.
+
+**Lo que hago automáticamente:**
+- 📖 **Leo el issue desde Jira** (si solo me das el ID)
+- ✍️ **Creo las subtareas directamente en Jira** (sin que copies/pegues)
+- 🔄 **Marco subtareas como Done** cuando las completamos
+- 💬 **Añado commits como comentarios** en las subtareas
+- 📊 **Leo el progreso real** desde Jira (no confío en tu memoria)
+- 🔗 **Linkeo todo automáticamente** (subtareas ↔ parent issue)
+
+---
+
+### 📝 Inicio simplificado con Jira
+
+#### Opción 1: Solo dar el ID del issue
+
+**Tu prompt:**
+```markdown
+Modo guiado: AMPC-1305
+```
+
+**Lo que hago automáticamente:**
+1. 📖 Leo el issue AMPC-1305 desde Jira
+2. 📖 Obtengo descripción, criterios, attachments
+3. 📊 Analizo el codebase
+4. ✍️ Genero plan de subtareas
+5. ✍️ **Creo las 8 subtareas directamente en Jira**
+6. 📋 Te muestro los links para verificar
+
+**Resultado:**
+```markdown
+🤖 MODO GUIADO ACTIVADO - AMPC-1305
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📋 PASO 1/6: LEER ISSUE DESDE JIRA
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🔄 Leyendo AMPC-1305 desde Jira...
+
+✅ Issue obtenido
+
+📋 AMPC-1305: Añadir botón de descarga múltiple en OverviewModule
+Estado: To Do
+Assignee: javimg
+Story Points: 20
+
+Descripción:
+[Descripción completa obtenida de Jira]
+
+Criterios de aceptación:
+[Criterios obtenidos de Jira]
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📋 PASO 2/6: ANÁLISIS DEL CODEBASE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+[Análisis automático del código]
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📋 PASO 3/6: CREAR SUBTAREAS EN JIRA
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🔄 Creando subtareas automáticamente en Jira...
+
+[1/8] Creando AMPC-1305-1: Verificar dependencias...
+✅ Creada: https://adsmurai.atlassian.net/browse/AMPC-1305-1
+
+[2/8] Creando AMPC-1305-2: Crear tipos...
+✅ Creada: https://adsmurai.atlassian.net/browse/AMPC-1305-2
+
+[3/8] Creando AMPC-1305-3: Implementar servicio...
+✅ Creada: https://adsmurai.atlassian.net/browse/AMPC-1305-3
+
+[4/8] Creando AMPC-1305-4: Crear hook...
+✅ Creada: https://adsmurai.atlassian.net/browse/AMPC-1305-4
+
+[5/8] Creando AMPC-1305-5: Añadir botón...
+✅ Creada: https://adsmurai.atlassian.net/browse/AMPC-1305-5
+
+[6/8] Creando AMPC-1305-6: Aplicar estilos...
+✅ Creada: https://adsmurai.atlassian.net/browse/AMPC-1305-6
+
+[7/8] Creando AMPC-1305-7: Tests de integración...
+✅ Creada: https://adsmurai.atlassian.net/browse/AMPC-1305-7
+
+[8/8] Creando AMPC-1305-8: Actualizar Storybook...
+✅ Creada: https://adsmurai.atlassian.net/browse/AMPC-1305-8
+
+════════════════════════════════════════════════════════════
+
+✅ 8 SUBTAREAS CREADAS EN JIRA
+
+Verifica en: https://adsmurai.atlassian.net/browse/AMPC-1305
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📋 PRÓXIMO PASO
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Las subtareas están listas en Jira. ¿Empezamos con la implementación?
+
+1. Empezar ahora → Di "Empezar subtarea 1"
+2. Pausar → Di "Resumen"
+```
+
+**No necesitaste:**
+- ❌ Copiar/pegar descripción de Jira
+- ❌ Copiar/pegar criterios
+- ❌ Crear manualmente 8 subtareas
+- ❌ Añadir story points manualmente
+- ❌ Linkear subtareas con parent
+
+**Todo automático** ✨
+
+---
+
+#### Opción 2: Si prefieres pegar la info manualmente
+
+**Tu prompt:**
+```markdown
+Modo guiado: AMPC-1305
+
+**Descripción:**
+[Pegas la descripción de Jira]
+
+**Criterios:**
+[Pegas los criterios]
+```
+
+**También funciona**, pero toma más tiempo para ti.
+
+---
+
+### 🔄 Durante el desarrollo: Sincronización automática
+
+#### Cuando completo una subtarea
+
+**Lo que hago sin que me lo pidas:**
+
+1. ✅ Creo el commit con el código
+2. 🔄 **Marco la subtarea como "Done" en Jira**
+3. 💬 **Añado el commit como comentario en la subtarea**
+4. 📊 Actualizo el progreso
+
+**Ejemplo:**
+```markdown
+✅ SUBTAREA 1 COMPLETADA
+
+Commit: a1b2c3d "AMPC-1305 Add jszip and file-saver dependencies"
+
+🔄 Actualizando Jira...
+✅ AMPC-1305-1 marcada como "Done"
+✅ Commit añadido como comentario
+
+🔗 Ver en Jira:
+https://adsmurai.atlassian.net/browse/AMPC-1305-1
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📊 PROGRESO (actualizado desde Jira)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ Subtarea 1: Verificar dependencias (Done)
+⏳ Subtarea 2: Crear tipos (To Do)
+⬜ Subtarea 3: Implementar servicio (To Do)
+...
+
+Completadas: 1/8 (12.5%)
+Story Points: 1/20 (5%)
+```
+
+---
+
+### 📊 Durante el seguimiento: Estado real de Jira
+
+#### Verificar progreso
+
+**Tu prompt:**
+```markdown
+¿Cómo voy con AMPC-1305?
+```
+
+**Lo que hago:**
+1. 📖 Leo el issue principal desde Jira
+2. 📖 Leo todas las subtareas desde Jira
+3. 📊 Calculo el progreso real
+4. 🎯 Identifico la siguiente subtarea pendiente
+
+**Mi respuesta:**
+```markdown
+📊 PROGRESO ACTUAL - AMPC-1305
+
+🔄 Leyendo desde Jira...
+
+════════════════════════════════════════════════════════════
+
+🎯 ISSUE PRINCIPAL
+────────────────────────────────────────────────────────────
+AMPC-1305: Añadir botón de descarga múltiple
+Estado: In Progress
+Story Points: 20
+
+════════════════════════════════════════════════════════════
+
+📋 SUBTAREAS (Estado desde Jira)
+────────────────────────────────────────────────────────────
+✅ AMPC-1305-1: Verificar dependencias (Done)
+✅ AMPC-1305-2: Crear tipos (Done)
+✅ AMPC-1305-3: Implementar servicio (Done)
+⏳ AMPC-1305-4: Crear hook (In Progress) ← ACTUAL
+⬜ AMPC-1305-5: Añadir botón (To Do)
+⬜ AMPC-1305-6: Aplicar estilos (To Do)
+⬜ AMPC-1305-7: Tests (To Do)
+⬜ AMPC-1305-8: Storybook (To Do)
+
+════════════════════════════════════════════════════════════
+
+📊 MÉTRICAS
+────────────────────────────────────────────────────────────
+Completadas: 3/8 (37.5%)
+En progreso: 1/8 (12.5%)
+Pendientes: 4/8 (50%)
+
+Story Points completados: 6/20 (30%)
+
+Última actualización: Hace 2 horas (desde Jira)
+
+════════════════════════════════════════════════════════════
+
+⏳ SIGUIENTE SUBTAREA
+────────────────────────────────────────────────────────────
+AMPC-1305-4: Crear hook useDownloadAllVariants
+
+Estado: In Progress
+Assignee: javimg
+Story Points: 5
+
+¿Quieres continuar con esta subtarea?
+```
+
+**Ventaja:** No dependo de tu memoria ni de lo que me digas. Leo el estado **real** de Jira.
+
+---
+
+### 🔗 Durante continuación: Recupero el contexto automáticamente
+
+#### Continuar en un nuevo chat
+
+**Tu prompt:**
+```markdown
+Modo guiado: Continuar AMPC-1305
+```
+
+**Lo que hago (sin que me des info adicional):**
+1. 📖 Leo el issue AMPC-1305 desde Jira
+2. 📖 Leo todas las subtareas y sus estados
+3. 🎯 Identifico cuál está "In Progress"
+4. 🎯 Identifico cuáles están "Done"
+5. 📊 Calculo el progreso
+6. ⏭️  Te propongo continuar con la subtarea actual
+
+**Mi respuesta:**
+```markdown
+🤖 MODO GUIADO - AMPC-1305 - CONTINUANDO
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📋 RECUPERANDO CONTEXTO DESDE JIRA
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🔄 Leyendo estado actual...
+
+✅ Contexto recuperado
+
+📊 ESTADO ACTUAL (desde Jira):
+✅ Subtarea 1: Done (commit: a1b2c3d)
+✅ Subtarea 2: Done (commit: b2c3d4e)
+✅ Subtarea 3: Done (commit: c3d4e5f)
+⏳ Subtarea 4: In Progress ← CONTINUAR AQUÍ
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📋 PRÓXIMO PASO
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Vamos a continuar con la subtarea 4: "Crear hook useDownloadAllVariants"
+
+Estado en Jira: In Progress
+Story Points: 5
+
+¿Procedo con la implementación?
+```
+
+**No necesitaste darme:**
+- ❌ Estado de qué está hecho
+- ❌ Commits anteriores
+- ❌ Qué subtarea sigue
+
+**Lo leí todo de Jira automáticamente** ✨
+
+---
+
+### ✅ Durante QA: Verifico que todo esté Done en Jira
+
+**Tu prompt:**
+```markdown
+QA completo de AMPC-1305
+```
+
+**Lo que hago:**
+1. 📖 Leo todas las subtareas desde Jira
+2. ✅ Verifico que todas estén en "Done"
+3. ⚠️  Te aviso si alguna NO está en "Done"
+4. 📊 Reviso el código de la rama
+
+**Mi respuesta:**
+```markdown
+🔍 QA COMPLETO - AMPC-1305
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📋 VERIFICANDO SUBTAREAS EN JIRA
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🔄 Leyendo estado desde Jira...
+
+✅ AMPC-1305-1: Done
+✅ AMPC-1305-2: Done
+✅ AMPC-1305-3: Done
+✅ AMPC-1305-4: Done
+✅ AMPC-1305-5: Done
+✅ AMPC-1305-6: Done
+✅ AMPC-1305-7: Done
+✅ AMPC-1305-8: Done
+
+✅ Todas las subtareas están marcadas como "Done" en Jira
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📋 REVISANDO CÓDIGO
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+[Reviso el código de la rama]
+[Ejecuto linters]
+[Ejecuto tests]
+[Verifico criterios de aceptación]
+
+════════════════════════════════════════════════════════════
+
+✅ QA COMPLETO - TODO OK
+
+El código está listo para crear la versión.
+```
+
+---
+
+### 🎯 Ventajas del Modo Guiado con integración Jira
+
+| Aspecto | Sin Integración | Con Integración Jira |
+|---------|-----------------|----------------------|
+| **Inicio** | Copias/pegas descripción | Solo das ID del issue |
+| **Crear subtareas** | Copias cada una manualmente | Se crean automáticamente |
+| **Tiempo para crear 8 subtareas** | ~15-20 minutos | ~30 segundos |
+| **Marcar subtareas como Done** | Manualmente cada una | Automático al completar |
+| **Añadir commits** | Copias/pegas en Jira | Automático como comentario |
+| **Ver progreso** | Me dices tú | Leo desde Jira (real) |
+| **Continuar en nuevo chat** | Das estado completo | Solo ID, leo desde Jira |
+| **Verificar en QA** | Confío en tu memoria | Leo estado real de Jira |
+
+**Tiempo ahorrado por step: ~30-40 minutos** 🚀
+
+---
+
+### 💡 Tips para máxima eficiencia
+
+#### 1. Solo da el ID del issue
+
+```markdown
+✅ MEJOR:
+"Modo guiado: AMPC-1305"
+
+❌ INNECESARIO:
+"Modo guiado: AMPC-1305
+Título: ...
+Descripción: ...
+Criterios: ..."
+```
+
+Si tienes la integración configurada, yo leo todo de Jira.
+
+---
+
+#### 2. Verifica las subtareas creadas
+
+Siempre te doy los links. Ábrelos y verifica que:
+- Títulos son correctos
+- Story points son razonables
+- Descripciones tienen sentido
+- Dependencias están claras
+
+Si algo no está bien:
+```markdown
+"La subtarea 3 debería tener 5 SP en vez de 3"
+```
+
+Y yo la actualizo en Jira.
+
+---
+
+#### 3. Deja que yo actualice el estado
+
+No necesitas decirme:
+```markdown
+❌ "Marca AMPC-1305-1 como Done"
+```
+
+Cuando completo una subtarea, **yo automáticamente la marco como Done** en Jira.
+
+---
+
+#### 4. Usa "¿Cómo voy?" para ver progreso real
+
+En cualquier momento:
+```markdown
+"¿Cómo voy con AMPC-1305?"
+```
+
+Y yo leo el estado **real** desde Jira, no de mi memoria.
+
+---
+
+#### 5. En nuevos chats, solo da el ID
+
+```markdown
+✅ SUFICIENTE:
+"Modo guiado: Continuar AMPC-1305"
+
+❌ INNECESARIO:
+"Modo guiado: Continuar AMPC-1305
+✅ Subtarea 1: Done
+✅ Subtarea 2: Done
+..."
+```
+
+Yo leo todo desde Jira automáticamente.
+
+---
+
+### 🚫 Si no tienes la integración configurada
+
+**No pasa nada.** El modo guiado sigue funcionando, pero:
+- ⚠️ Tendrás que copiar/pegar la info de Jira
+- ⚠️ Yo generaré las subtareas en texto (no en Jira)
+- ⚠️ Tendrás que crear manualmente las subtareas en Jira
+- ⚠️ Tendrás que marcar manualmente como Done
+- ⚠️ Tendrás que añadir commits como comentarios manualmente
+
+**Recomendación:** Configura la integración con Jira (MCP Atlassian) para máxima eficiencia.
 
 ---
 
